@@ -5,4 +5,10 @@ use thiserror::Error;
 pub enum ContractError {
     #[error("{0}")]
     Std(#[from] StdError),
+
+    #[error("Invalid expiration")]
+    InvalidExpiration {},
+
+    #[error("No rebase record")]
+    NoRebaseRecord {},
 }

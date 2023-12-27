@@ -23,11 +23,14 @@ library = []
 
 [dependencies]
 cosmwasm-std = { version = "1.0.0-beta8", features = ["staking"] }
+cosmwasm-schema = "1.1.5"
+cw-utils = "0.16.0"
 schemars = "0.8.1"
 serde = { version = "1.0.103", default-features = false, features = ["derive"] }
 snafu = { version = "0.6.3" }
 thiserror = { version = "1.0.23" }
 cw-storage-plus = { version = "0.13.2" }
+osmosis-std = "0.21.0"
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0-beta8" }

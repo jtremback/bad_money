@@ -1,6 +1,5 @@
 use cosmwasm_schema::cw_serde;
-use schemars::JsonSchema;
-use serde::{Deserialize, Serialize};
+use cosmwasm_std::Uint128;
 
 #[cw_serde]
 pub struct InstantiateMsg {
@@ -9,11 +8,9 @@ pub struct InstantiateMsg {
 
 #[cw_serde]
 pub enum ExecuteMsg {
-    Increment {},
-    Reset { count: i32 },
-    DepositToPiggyBank {},
-    Unlock {},
-    WithdrawFromPiggyBank {},
+    Deposit {},
+    Unlock { amount: Uint128 },
+    Withdraw {},
     Rebase {},
 }
 

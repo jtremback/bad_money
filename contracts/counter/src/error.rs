@@ -11,4 +11,13 @@ pub enum ContractError {
 
     #[error("No rebase record")]
     NoRebaseRecord {},
+
+    #[error("No piggy bank entry")]
+    NoPiggyBankEntry {},
+
+    #[error("No unlock entry")]
+    NoUnlockEntry {},
+
+    #[error("Insufficient funds")]
+    InsufficientFunds {},
 }

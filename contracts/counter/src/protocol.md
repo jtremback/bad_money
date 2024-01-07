@@ -1,3 +1,6 @@
+Idealized protocol. This is how it is supposed to work, but the implementation has
+different mechanics to save on gas.
+
 ```
 Rebase:
   get current_price from price oracle

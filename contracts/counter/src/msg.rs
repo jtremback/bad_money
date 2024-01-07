@@ -1,9 +1,12 @@
 use cosmwasm_schema::cw_serde;
-use cosmwasm_std::Uint128;
+use cosmwasm_std::{Addr, Uint128};
+use cw_utils::Duration;
 
 #[cw_serde]
 pub struct InstantiateMsg {
-    pub count: i32,
+    pub rebase_interval: Duration,
+    pub unlock_interval: Duration,
+    pub denom: String,
 }
 
 #[cw_serde]
@@ -16,8 +19,7 @@ pub enum ExecuteMsg {
 
 #[cw_serde]
 pub enum QueryMsg {
-    // GetCount returns the current count as a json-encoded number
-    GetCount {},
+    GetUnlocks { address: Addr },
 }
 
 // We define a custom struct for each query response

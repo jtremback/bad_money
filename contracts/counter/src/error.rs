@@ -13,7 +13,7 @@ pub enum ContractError {
     NoRebaseRecord {},
 
     #[error("No piggy bank entry")]
-    NoPiggyBankEntry {},
+    NoLockEntry {},
 
     #[error("No unlock entry")]
     NoUnlockEntry {},

@@ -1,6 +1,6 @@
 use cosmwasm_std::{
-    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
-    StdResult,
+    entry_point, from_json, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response,
+    StdError, StdResult,
 };
 
 use crate::error::ContractError;
@@ -53,6 +53,7 @@ pub fn execute(
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::GetUnlocks { address } => query_unlocks(deps, env, address),
+        QueryMsg::GetLocks { address } => query_locks(deps, env, address),
     }
 }
 
@@ -69,7 +70,7 @@ pub fn deposit(
         .1;
 
     match LOCK_ENTRIES.may_load(deps.storage, message_info.sender.clone())? {
-        // If pbe does not exist, create pbe with amount being deposited
+        // If lock does not exist, create lock with amount being deposited
         None => {
             let lock_entry = LockEntry {
                 amount: message_info.funds[0].amount,
@@ -77,8 +78,8 @@ pub fn deposit(
             };
             LOCK_ENTRIES.save(deps.storage, message_info.sender.clone(), &lock_entry)?;
         }
-        // If pbe exists, get amount as if withdrawn at current time and add to amount being deposited,
-        // overwriting pbe with current rebase_at_lock
+        // If lock exists, get amount as if withdrawn at current time and add to amount being deposited,
+        // overwriting lock with current rebase_at_lock
         Some(lock_entry) => {
             let amount = calc_withdraw(lock_entry.rebase_at_lock, last_rebase, lock_entry.amount);
             let lock_entry = LockEntry {
@@ -259,6 +260,11 @@ pub fn rebase(deps: DepsMut, env: Env, _: MessageInfo) -> Result<Response, Contr
     Ok(Response::new())
 }
 
+pub fn query_locks(deps: Deps, _env: Env, address: Addr) -> StdResult<Binary> {
+    let locks = LOCK_ENTRIES.may_load(deps.storage, address)?;
+    to_json_binary(&locks)
+}
+
 pub fn query_unlocks(deps: Deps, _env: Env, address: Addr) -> StdResult<Binary> {
     let unlocks = UNLOCK_ENTRIES
         .prefix(address)
@@ -280,7 +286,7 @@ pub fn query_unlocks(deps: Deps, _env: Env, address: Addr) -> StdResult<Binary> 
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coins, from_binary, StdError, Timestamp, Uint128};
+    use cosmwasm_std::{coins, from_binary, from_json, StdError, Timestamp, Uint128};
     use osmosis_std::types::cosmos::gov::v1::Deposit;
 
     use super::*;
@@ -315,7 +321,29 @@ mod tests {
         .unwrap();
 
         execute(deps.as_mut(), mock_env(), info, ExecuteMsg::Deposit {}).unwrap();
+
+        let res = query(
+            deps.as_ref(),
+            mock_env(),
+            QueryMsg::GetLocks {
+                address: Addr::unchecked("anyone"),
+            },
+        )
+        .unwrap();
+
+        let out: LockEntry = from_json(&res).unwrap();
+
+        println!("res: {:?}", out); // Log res to the console
+
+        // assert_eq!(
+        //     out,
+        //     LockEntry {
+        //         amount: Uint128::new(100),
+        //         rebase_at_lock: Decimal::new(1, 0),
+        //     }
+        // )
     }
+
     // fn test_create() {
     //     let mut deps = mock_dependencies();
 

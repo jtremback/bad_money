@@ -20,6 +20,7 @@ pub enum ExecuteMsg {
 #[cw_serde]
 pub enum QueryMsg {
     GetUnlocks { address: Addr },
+    GetLocks { address: Addr },
 }
 
 // We define a custom struct for each query response

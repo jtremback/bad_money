@@ -6,7 +6,7 @@ Rebase:
   get current_price from price oracle
   load price at last rebase from storage
   for each piggy bank balance:
-    balance' = (current_price / last_price) * balance
+    balance' = (last_price / current_price) * balance
 
 Unlock
   Initiate unlocking for coins in the piggy bank
@@ -14,6 +14,9 @@ Unlock
 
 Withdraw
   Withdraw fully unlocked coins once unlock period is over
+
+Deposit
+  Lock coins in the piggy where they are subject to rebase
 
 ```
 
